@@ -1,0 +1,62 @@
+
+The Big FAQ (part 8) can be revisted if at any time I get stuck for easy solutions to common problems
+
+Course Roadmap:
+  Getting Requirements ✓
+  Docker Install ✓
+  Container Basics
+  Image Basics
+  Docker Networking
+  Docker Volumes
+  Docker Compose
+  Orchestration
+  Docker Swarm
+  Kubernetes
+  Swarm vs. K8s
+  Student Q&A
+  File Reviews
+
+  References and Documentation all throughout
+    Github:
+    - Course Github Repo - https://github.com/bretfisher/udemy-docker-mastery
+    - Github Basics and Docs - https://docs.github.com/en/get-started/quickstart/set-up-git
+
+Why Docker?:
+  Isolation
+    - old servers kept apps all over the place spread across machines, causing regular problems, but then came...
+    - Virtual Machines: VM's
+      allowed servers to be spun up on demand, accessability became a problem as even simple programs contained uneccesary chaff
+  Environment
+    - programming for multiple environments bleeds complexity.
+    - the "Matrix from Hell" represents every part of your app interacting with every user.
+    - Containers: an abstract representing the "MfH"
+  Speed (of change)
+    - discussing the speed of business, not anything to do with hardware or software
+    - Containers are the next step in computing that allow faster; development, building, testing, and deploying
+
+The 3 step Docker workflow:
+  build
+    - Dockerfile: OCI image standard
+    - universal package manager
+    Image layers
+      python bins+libs
+      flask
+      app
+  ship
+    - Docker Registry: OCI distribution spec
+    - universal app distribution
+    - Built image has a unique SHA hash, this allows it to be shared
+      push image (docker push)
+      pull image (docker pull)
+  run
+    runs Docker to pull an image
+    - Linux/Win Server: self contained machine
+    - IMAGE:
+      creates and runs container(s) containing your app
+      allows mass hosting of the same page.
+
+Running containers:
+  3 major ways to run containers
+    - Locally: (Docker Desktop, RD)
+    - Server: (Docker Engine, K8s)
+    - PaaS: (Cloud Run, Fargate)
