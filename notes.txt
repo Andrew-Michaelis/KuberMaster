@@ -4,8 +4,8 @@ The Big FAQ (part 8) can be revisted if at any time I get stuck for easy solutio
 Course Roadmap:
   Getting Requirements ✓
   Docker Install ✓
-  Container Basics
-  Image Basics
+  Container Basics ✓
+  Image Basics ✓
   Docker Networking
   Docker Volumes
   Docker Compose
@@ -20,6 +20,9 @@ Course Roadmap:
     Github:
     - Course Github Repo - https://github.com/bretfisher/udemy-docker-mastery
     - Github Basics and Docs - https://docs.github.com/en/get-started/quickstart/set-up-git
+    Docker:
+    - Docker Official Images Library - https://github.com/docker-library/official-images/tree/master/library
+    - Storage Drivers Overview - https://docs.docker.com/storage/storagedriver/
 
 Why Docker?:
   Isolation
@@ -29,7 +32,7 @@ Why Docker?:
   Environment
     - programming for multiple environments bleeds complexity.
     - the "Matrix from Hell" represents every part of your app interacting with every user.
-    - Containers: an abstract representing the "MfH"
+    - Containers: an abstract, representing the "MfH"
   Speed (of change)
     - discussing the speed of business, not anything to do with hardware or software
     - Containers are the next step in computing that allow faster; development, building, testing, and deploying
@@ -55,8 +58,30 @@ The 3 step Docker workflow:
       creates and runs container(s) containing your app
       allows mass hosting of the same page.
 
-Running containers:
+Running Containers:
   3 major ways to run containers
     - Locally: (Docker Desktop, RD)
     - Server: (Docker Engine, K8s)
     - PaaS: (Cloud Run, Fargate)
+
+What is an Image?
+  Quick definition:"The application binaries and dependencies for your app and the metadata on how to run it":
+  Official definition:"An Image is an ordered collection of root filesystem changes and 
+      the corresponding execution parameters for use witin a container runtime.":
+  Importantly, an image is only the kernel modules, without the kernel. It is NOT an OS, which makes it much lighter than VMs
+  Dockerhub:
+    - basically Github for Docker images
+    - best practice for production includes pulling exact versions of an image
+    - Alpine images are typically smaller than their counterparts
+  Layers:
+    - Images are built on a layer system
+    - you never store the same data more than once
+    - each time your image uses the same layer as another image, it's using the actual same layer
+  (docker inspect *image*) gives a json file containing all the metadata for the image
+  Image, Tag and Push:
+    (docker image tag *--help*)
+    - tags point to a specific image version
+    - when you pull IMAGE:latest or IMAGE:mainline you are pulling a specific version of IMAGE
+    (docker image tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG])
+    - if you don't specify a tag it will default to "latest"
+    - you can tag pretty much anything as pretty much anything, follow conventions please
