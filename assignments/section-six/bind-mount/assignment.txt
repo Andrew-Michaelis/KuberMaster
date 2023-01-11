@@ -1,0 +1,8 @@
+use Jekyll "Static Site Generator" to start a local web server - https://jekyllrb.com/
+copied source code into /assignments/section-six/bind-mount
+changed directory to the above
+install jekyll [gem install jekyll bundler] (ERROR: while executing gem ... You don't have write permissions)
+ok then, to google [gem install jekyll bundler --user-install]
+now that I have jekyll... [docker run -p 80:4000 -v $(pwd):/site bretfisher/jekyll-serve]
+go to localhost:80 and see the default.
+made a new markdown file "2023-01-09-my-custom-post.markdown" in the _posts folder. It showed up on the webpage

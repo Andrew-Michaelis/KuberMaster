@@ -6,8 +6,8 @@ Course Roadmap:
   Docker Install ✓
   Container Basics ✓
   Image Basics ✓
-  Docker Networking
-  Docker Volumes
+  Docker Networking ✓
+  Docker Volumes ✓
   Docker Compose
   Orchestration
   Docker Swarm
@@ -23,6 +23,11 @@ Course Roadmap:
     Docker:
     - Docker Official Images Library - https://github.com/docker-library/official-images/tree/master/library
     - Storage Drivers Overview - https://docs.docker.com/storage/storagedriver/
+    - Data Storage Overview - https://docs.docker.com/storage/
+    Articles:
+    - Methodology for building software-as-a-service apps - https://12factor.net/
+    Resources:
+    - Static Site Generator - https://jekyllrb.com/
 
 Why Docker?:
   Isolation
@@ -85,3 +90,26 @@ What is an Image?
     (docker image tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG])
     - if you don't specify a tag it will default to "latest"
     - you can tag pretty much anything as pretty much anything, follow conventions please
+
+Persistent Data
+  Containers are built to be disposable and easy to change, swap, and redeploy.
+  This can cause issues when we want data to stick around between deployments.
+  The two solutions Docker makes use of are [Volumes] and [Bind Mounts]
+    - Volumes: make a special location outside of the container UFS
+    - Bind Mounts: Link the containers path to a host path
+  Volumes:
+    - VOLUME is a command in Dockerfile, the choosen path will reference a location outside the container created
+    (VOLUME [/PATH])
+    - when a container is removed the volume will remain and the data in it is safe
+    - volumes can be named for human readability
+    (docker container run [OPTIONS] IMAGE [-v NAME:/PATH] [ARG])
+  Bind Mounting:
+    - Bind Mounting is when you map a host file or directory to a container file or directory
+    - this is effectively just having two seperate pointers for the same location
+    - Can't use in Dockerfile, must be set up at container run
+    (... run [-v /HOST_DIRECTORY:/CONTAINER_PATH])
+    - in a folder which contains your index.html
+    {docker container run -d --name IMAGE_NAME -p PORT_MAP [-v $(pwd):/CONTAINER_HTML_PATH] IMAGE}
+    - the example used is
+    {docker container run -d --name nginx -p 80:80 -v $(pwd):/usr/share/nginx/html nginx}
+    - this allows you to edit your code on a host machine and have it apply to your containers without needing to work inside them

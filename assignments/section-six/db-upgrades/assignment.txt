@@ -1,0 +1,8 @@
+docker pull postgres:9.6.1
+docker container run --name "postgres-9.6.1" -e POSTGRES_PASSWORD=pass -d -v postgres-global:/var/lib/postgresql/data postgres:9.6.1
+checked logs, stopped container
+docker container run --name "postgres-9.6.2" -e POSTGRES_PASSWORD=pass -d -v postgres-global:/var/lib/postgresql/data postgres:9.6.2
+checked logs.
+confirmed, second container is using the same volume even though it's a different container with a different image.
+
+later clarifications on password requirement gives [POSTGRES_HOST_AUTH_METHOD=trust] as a way to not need a password
