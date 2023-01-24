@@ -8,8 +8,8 @@ Course Roadmap:
   Image Basics ✓
   Docker Networking ✓
   Docker Volumes ✓
-  Docker Compose
-  Orchestration
+  Docker Compose ✓
+  Orchestration ✓
   Docker Swarm
   Kubernetes
   Swarm vs. K8s
@@ -24,6 +24,12 @@ Course Roadmap:
     - Docker Official Images Library - https://github.com/docker-library/official-images/tree/master/library
     - Storage Drivers Overview - https://docs.docker.com/storage/storagedriver/
     - Data Storage Overview - https://docs.docker.com/storage/
+    Docker-Compose:
+    - Docker Official Documentation for Docker-Compose - https://docs.docker.com/compose/compose-file/
+    - YAML official site - https://yaml.org/
+    - YAML formatting scribnotes - https://yaml.org/refcard.html
+    Swarm:
+    - Docker Official Documentation for swarms - https://docs.docker.com/engine/swarm/services/
     Articles:
     - Methodology for building software-as-a-service apps - https://12factor.net/
     Resources:
@@ -84,10 +90,10 @@ What is an Image?
     - each time your image uses the same layer as another image, it's using the actual same layer
   (docker inspect *image*) gives a json file containing all the metadata for the image
   Image, Tag and Push:
-    (docker image tag *--help*)
+    {docker image tag *--help*}
     - tags point to a specific image version
     - when you pull IMAGE:latest or IMAGE:mainline you are pulling a specific version of IMAGE
-    (docker image tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG])
+    {docker image tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]}
     - if you don't specify a tag it will default to "latest"
     - you can tag pretty much anything as pretty much anything, follow conventions please
 
@@ -102,14 +108,58 @@ Persistent Data
     (VOLUME [/PATH])
     - when a container is removed the volume will remain and the data in it is safe
     - volumes can be named for human readability
-    (docker container run [OPTIONS] IMAGE [-v NAME:/PATH] [ARG])
+    {docker container run [OPTIONS] IMAGE [-v NAME:/PATH] [ARG]}
   Bind Mounting:
     - Bind Mounting is when you map a host file or directory to a container file or directory
     - this is effectively just having two seperate pointers for the same location
     - Can't use in Dockerfile, must be set up at container run
-    (... run [-v /HOST_DIRECTORY:/CONTAINER_PATH])
+    {... run [-v /HOST_DIRECTORY:/CONTAINER_PATH]}
     - in a folder which contains your index.html
     {docker container run -d --name IMAGE_NAME -p PORT_MAP [-v $(pwd):/CONTAINER_HTML_PATH] IMAGE}
     - the example used is
     {docker container run -d --name nginx -p 80:80 -v $(pwd):/usr/share/nginx/html nginx}
     - this allows you to edit your code on a host machine and have it apply to your containers without needing to work inside them
+
+Docker Compose
+  Containers are typically self-contained and designed for a single or small number of tasks
+  Docker Compose makes it easier to manipulate data and processes through many containers working in tandem
+  Docker Compose is comprised of two major parts, [YAML File] and [docker-compose CLI tool]
+    - YAML-formatted files describe our solutions for a number of tasks relating to our container groups and display heiarchy
+    - docker-compose CLI is used for manual manipulation of YAML parameters
+  YAML:
+    - containers
+    - networks
+    - volumes
+  docker-compose:
+    - development
+    - test automation
+  docker-compose is the default filename, but any filename can be used if you instead call docker-compose -f 'filename'
+  docker-compose has been integrated with docker desktop, (docker compose up) is now a better version of (docker-compose up)
+
+Swarm Mode
+  ? How do we automate container lifecycle ?
+  ? How can we easily scale directionally ?
+  ? How can we ensure our containers restart on failure ?
+  ? How can we replace containers without downtime ?
+  ? How can we control and track where containers start ?
+  ? How can we create cross-node virtual networks ?
+  ? How can we ensure only secure servers run our containers ?
+  ? How can we store secrets, keys, passwords and make sure only the correct container gets them ?
+  ! INTRODUCING SWARM MODE !
+  - Swarm Mode is a server clustering solution built into Docker
+  - unrelated to Swarm "classic" for pre-1.12 versions
+  Swarm allows the creation of a 'service' which can create and manage 'workers'.
+    this allows a 'manager' to offload tasks to available 'worker' nodes and reduce individual workloads
+  Swarm is disabled by default, once enabled you get new commands such as;
+    (docker swarm), (docker node), (docker service), (docker stack), and (docker secret)
+    To enable: use (docker swarm init). This creates a single-node swarm by default
+  - Once swarm is enabled 'service' replaces 'compose' in general command use
+    {docker service create alpine ping 8.8.8.8} #ping 8.8.8.8 is just to give image something to do
+    {docker service ls}
+    {docker service update [IMAGE_ID] --replicas 3} #creates copies of selected image
+    {docker container ls} #now shows 3 identical containers
+    - if an individual container fails then service will automatically recreate it.
+    {docker service rm [IMAGE_NAME]} #required to actually remove containers
+  Spinning up VM's to play with:
+    Docker-Machine has been depreciated, use Multipass as a better option for managing multiple local VM's
+    I intend to use "labs.play-with-docker.com", though you only have 4 hours with those VM's before they wipe
