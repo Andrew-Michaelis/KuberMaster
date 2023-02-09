@@ -162,4 +162,3 @@ Swarm Mode
     {docker service rm [IMAGE_NAME]} #required to actually remove containers
   Spinning up VM's to play with:
     Docker-Machine has been depreciated, use Multipass as a better option for managing multiple local VM's
-    I intend to use "labs.play-with-docker.com", though you only have 4 hours with those VM's before they wipe
