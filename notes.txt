@@ -28,10 +28,21 @@ Course Roadmap:
     - Docker Official Documentation for Docker-Compose - https://docs.docker.com/compose/compose-file/
     - YAML official site - https://yaml.org/
     - YAML formatting scribnotes - https://yaml.org/refcard.html
+    - Multiple Compose files - https://docs.docker.com/compose/extends/#multiple-compose-files
+    - Compose in production - https://docs.docker.com/compose/production/
+    - Secrets in Compose - https://docs.docker.com/compose/compose-file/#secrets-configuration-reference
     Swarm:
     - Docker Official Documentation for swarms - https://docs.docker.com/engine/swarm/services/
+    - Swarm Routing Mesh - https://docs.docker.com/engine/swarm/ingress/
+    - Secrets in Swarm - https://docs.docker.com/engine/swarm/secrets/
+    Service:
+    - Service Update - https://docs.docker.com/engine/reference/commandline/service_update/
+    HEALTHCHECK:
+    - Healthcheck in Dockerfile - https://docs.docker.com/engine/reference/builder/#healthcheck
+    - Healthcheck in Compose - https://docs.docker.com/compose/compose-file/#healthcheck
     Articles:
     - Methodology for building software-as-a-service apps - https://12factor.net/
+    - Swarm vs Compose, BFisher AMA - https://github.com/BretFisher/ama/discussions/146
     Resources:
     - Static Site Generator - https://jekyllrb.com/
 
@@ -162,3 +173,31 @@ Swarm Mode
     {docker service rm [IMAGE_NAME]} #required to actually remove containers
   Spinning up VM's to play with:
     Docker-Machine has been depreciated, use Multipass as a better option for managing multiple local VM's
+
+Service (Swarm) Updates
+  Swarm updates through a rolling replacement of tasks&containers in a service
+    - this helps massively in limiting downtime (though doesn't 'prevent' downtime)
+  For most updates your containers will all be replaced, though there are many cli options to control the operation
+  There are rollback, healthcare, & scale options
+  there is no (service update) command, rather you will deploy and if a service exists it will update the current service
+  Some examples for updates include;
+    - updating an image to a newer deployment
+    - adding an environment variable such as removing a port
+    - changing replica numbers for multiple services
+  once again, updating is just an edit of the YAML file then {docker stack deploy -c file.yml <stackname>}
+HEALTHCHECK was added in 1.12, supported in Dockerfile, Compose YAML, docker run, & Swarm Services
+  - it expects exit 0 (OK) or exit 1 (Error)
+  - there are three container states: starting, healthy, & unhealthy
+  Healthcheck status shows up in {docker container ls}
+  last 5 healthchecks can be seen with {docker container inspect}
+  Docker run does nothing with these, but services will replace tasks that fail and service updates will wait for confirmation
+  Options include;
+  --interval=DURATION (default: 30s, how often (in seconds) the health will be checked)
+  --timeout=DURATION (default: 30s, how long (in seconds) before an attempt fails through timeout)
+  --start-period=DURATION (default: 0s, how long (in seconds) before an attempt will be started (slow booting apps))
+  --retries=N (default: 3, how many attempts can be made to get a healhty result)
+  {HEALTHCHECK curl -f http://localhost/ || false}
+  {HEALTHCHECK --timeout=2s --interval=3s --retries=3 CMD curl -f http://localhost || exit 1} (options require CMD)
+  running a static site? Just test default URL
+  {FROM nginx:1.13
+  HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/ || exit 1}
