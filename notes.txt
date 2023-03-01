@@ -10,7 +10,7 @@ Course Roadmap:
   Docker Volumes ✓
   Docker Compose ✓
   Orchestration ✓
-  Docker Swarm
+  Docker Swarm ✓
   Kubernetes
   Swarm vs. K8s
   Student Q&A
@@ -24,6 +24,9 @@ Course Roadmap:
     - Docker Official Images Library - https://github.com/docker-library/official-images/tree/master/library
     - Storage Drivers Overview - https://docs.docker.com/storage/storagedriver/
     - Data Storage Overview - https://docs.docker.com/storage/
+    - Configuring a (non-default) Registry - https://docs.docker.com/registry/configuration/
+    - Registry Garbage Colleciton - https://docs.docker.com/registry/garbage-collection/
+    - Mirroring DockerHub - https://docs.docker.com/registry/recipes/mirror/
     Docker-Compose:
     - Docker Official Documentation for Docker-Compose - https://docs.docker.com/compose/compose-file/
     - YAML official site - https://yaml.org/
@@ -45,6 +48,8 @@ Course Roadmap:
     - Swarm vs Compose, BFisher AMA - https://github.com/BretFisher/ama/discussions/146
     Resources:
     - Static Site Generator - https://jekyllrb.com/
+    - Tutorials and Practice for Docker - https://training.play-with-docker.com/
+    - Curated List of Docker resources and projects - https://github.com/veggiemonk/awesome-docker#registry
 
 Why Docker?:
   Isolation
@@ -201,3 +206,30 @@ HEALTHCHECK was added in 1.12, supported in Dockerfile, Compose YAML, docker run
   running a static site? Just test default URL
   {FROM nginx:1.13
   HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/ || exit 1}
+
+Container Registries
+  - registries are a required part of a container plan
+  Docker Hub: Digging Deeper
+    - while Docker Hub is the most popular image registry, it isn't the only one.
+    - Docker Hub is really Docker Registry with some simple Image Building tools built in.
+    the "Create Automated Build" option allows you to auto-build a Docker Repository from Github and have it auto-update
+    This is the prefered way to build a repository if you are building through a Github project
+  Docker Registry
+    - Docker Registry is a private image registry for your network
+    - the default in private container registries
+    - less featured than Docker Hub or others with no web UI but being simple is still useful
+    Now that we are working in registries, it's important to pay attention to garbage collection.
+  Create A Registry
+    - runs default port 5000, re-tag an existing image and push to your registry
+    - Docker won't talk to a registry without HTTPS, "secure by default"
+    - there's an exception for localhost (127.0.0.0/8)
+    {docker container run -d -p 5000:5000 --name regis registry} the image is named registry
+    {docker pull hello-world} tiny, basic image. for example purposes
+    {docker tag hello-world 127.0.0.1:5000/hello-world} make my own official image at the root of my registry
+    on {docker image ls} you will now see two repositories using the same image.
+    {docker push 127.0.0.1:5000/hello-world} will effectively 'publish' the image onto your local root
+    {docker image remove hello-world}{docker image remove 127.0.0.1:5000/hello-world} remove images from machine
+    now {docker pull 127.0.0.1:5000/hello-world} will pull that same image, it's effectively published into that repository
+    To use a volume, let's first clean up our mess {docker container kill regis}{docker container rm regis} then;
+    {docker container run -d -p 5000:5000 --name regis -v $(pwd)/registry-data:/var/lib/registry registry}
+    {docker push 127.0.0.1:5000/hello-world} and now our (127.0.0.1:5000/hello-world) is stored in our volume
