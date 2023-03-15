@@ -38,6 +38,11 @@ Course Roadmap:
     - Docker Official Documentation for swarms - https://docs.docker.com/engine/swarm/services/
     - Swarm Routing Mesh - https://docs.docker.com/engine/swarm/ingress/
     - Secrets in Swarm - https://docs.docker.com/engine/swarm/secrets/
+    Kubernetes:
+    - Kubernetes Home - https://kubernetes.io/
+    - Certified Kubernetes Distributors - https://kubernetes.io/partners/#conformance
+    - Kubernetes Components - https://kubernetes.io/docs/concepts/overview/components/#master-components
+    - K8s Labs in Browser - https://killercoda.com/
     Service:
     - Service Update - https://docs.docker.com/engine/reference/commandline/service_update/
     HEALTHCHECK:
@@ -46,6 +51,7 @@ Course Roadmap:
     Articles:
     - Methodology for building software-as-a-service apps - https://12factor.net/
     - Swarm vs Compose, BFisher AMA - https://github.com/BretFisher/ama/discussions/146
+    - History of Kubernetes - https://en.wikipedia.org/wiki/Kubernetes
     Resources:
     - Static Site Generator - https://jekyllrb.com/
     - Tutorials and Practice for Docker - https://training.play-with-docker.com/
@@ -233,3 +239,35 @@ Container Registries
     To use a volume, let's first clean up our mess {docker container kill regis}{docker container rm regis} then;
     {docker container run -d -p 5000:5000 --name regis -v $(pwd)/registry-data:/var/lib/registry registry}
     {docker push 127.0.0.1:5000/hello-world} and now our (127.0.0.1:5000/hello-world) is stored in our volume
+
+Kubernetes
+  What is K8s? 
+  - A container orchestrator. Originally released by Google, now an opensource project.
+  - It's a set of APIs that run on top of Docker(usually) and provides API/CLI management options
+  - Many cloud services provide a version of Kubernetes for you.
+  Why K8s?
+  - It provides Container Orchestration, which is the 'next step' in application development and deployment
+  - There are other Orchestrators but for the purpose of hybrid/generalized, Swarm and Kubernetes are the leaders
+  K8s or Swarm?
+    Swarm: easier to deploy/manage
+    - Comes with docker, single vendor container platform. 
+    - 80/20 rule, has 20% features that solves 80% of cases.
+    - Runs anywhere that docker runs (so basically anywhere).
+    - Secure by default, and easier to troubleshoot.
+    Kubernetes: has more features/flexibility as well as wider adoption and support
+    - Clouds and vendors will deploy/manage K8s for you
+    - Infrastructor vendors are making their own 'official' distributions
+    - Widest adoption and community
+    - Flexible, covers the widest set of use cases
+    - "No one ever got fired for buying IBM" - It's the trendy option that luddite bosses may buy.
+  Basic Terminology:
+    Kubernetes: The orchestration system as a whole
+      - K8s, "k-eights", or Kube for short
+    Kubectl: CLI to configure Kubernetes and manage apps
+      - Using "cube control" official pronunciation
+    Node: a single server in the Kubernetes cluster
+    Kubelet: Kubernetes agent running on nodes
+    Control Plane: Set of containers that manage the cluster
+      - this inlcudes the API server, scheduler, controller manage, etcd, and more
+      - sometimes called master
+  
