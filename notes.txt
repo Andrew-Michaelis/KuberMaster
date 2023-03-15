@@ -38,16 +38,23 @@ Course Roadmap:
     - Docker Official Documentation for swarms - https://docs.docker.com/engine/swarm/services/
     - Swarm Routing Mesh - https://docs.docker.com/engine/swarm/ingress/
     - Secrets in Swarm - https://docs.docker.com/engine/swarm/secrets/
+    - Service Update - https://docs.docker.com/engine/reference/commandline/service_update/
+    HEALTHCHECK:
+    - Healthcheck in Dockerfile - https://docs.docker.com/engine/reference/builder/#healthcheck
+    - Healthcheck in Compose - https://docs.docker.com/compose/compose-file/#healthcheck
     Kubernetes:
     - Kubernetes Home - https://kubernetes.io/
     - Certified Kubernetes Distributors - https://kubernetes.io/partners/#conformance
     - Kubernetes Components - https://kubernetes.io/docs/concepts/overview/components/#master-components
     - K8s Labs in Browser - https://killercoda.com/
-    Service:
-    - Service Update - https://docs.docker.com/engine/reference/commandline/service_update/
-    HEALTHCHECK:
-    - Healthcheck in Dockerfile - https://docs.docker.com/engine/reference/builder/#healthcheck
-    - Healthcheck in Compose - https://docs.docker.com/compose/compose-file/#healthcheck
+    - Kubernetes Cheat Sheet - https://cheatography.com/gauravpandey44/cheat-sheets/kubernetes-k8s/
+    - Kubectl Cheat Sheet - https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+    - Kubectl for Docker users - https://kubernetes.io/docs/reference/kubectl/docker-cli-to-kubectl/
+    - Service - https://kubernetes.io/docs/concepts/services-networking/service/
+    - Using Services (tutorial) - https://kubernetes.io/docs/tutorials/kubernetes-basics/expose/expose-intro/
+    - Node Port - https://kubernetes.io/docs/concepts/services-networking/service/#nodeport
+    - K8s DNS spec - https://github.com/kubernetes/dns/blob/master/docs/specification.md 
+    - Core DNS for K8s - https://www.coredns.io/plugins/kubernetes/
     Articles:
     - Methodology for building software-as-a-service apps - https://12factor.net/
     - Swarm vs Compose, BFisher AMA - https://github.com/BretFisher/ama/discussions/146
@@ -56,12 +63,13 @@ Course Roadmap:
     - Static Site Generator - https://jekyllrb.com/
     - Tutorials and Practice for Docker - https://training.play-with-docker.com/
     - Curated List of Docker resources and projects - https://github.com/veggiemonk/awesome-docker#registry
+    - Cheat Sheet Generator (with community sharing) - https://cheatography.com/
 
 Why Docker?:
   Isolation
     - old servers kept apps all over the place spread across machines, causing regular problems, but then came...
-    - Virtual Machines: VM's
-      allowed servers to be spun up on demand, accessability became a problem as even simple programs contained uneccesary chaff
+    - Virtual Machines: VM's which allowed servers to be spun up on demand
+      - accessability became a problem as even simple programs contained uneccesary chaff
   Environment
     - programming for multiple environments bleeds complexity.
     - the "Matrix from Hell" represents every part of your app interacting with every user.
@@ -267,7 +275,36 @@ Kubernetes
       - Using "cube control" official pronunciation
     Node: a single server in the Kubernetes cluster
     Kubelet: Kubernetes agent running on nodes
+    Pod: one or more containers running together on one Node
+      - basic unit of deployment, containers are always in pods
+      - K8s can't directly create a container, instead you make a pod that creates the container inside
+    Controller: for creating/updating pods and other objects
     Control Plane: Set of containers that manage the cluster
       - this inlcudes the API server, scheduler, controller manage, etcd, and more
       - sometimes called master
-  
+    Service: network endpoint to connect to a pod
+    Namespace: Filtered group of objects in cluster
+      - just a filter, not a security feature
+  Kubectl CLI:
+    The Three Primary kubectl CLI commands to create a pod:
+      {kubectl run} (single pod per command since 1.18, for troubleshooting mainly)
+        - {kubectl run NAME --image IMAGE} - unlike Docker, NAME is required
+      {kubectl create} (create some resources via CLI or YAML)
+        - {kubectl create deploy(ment) NAME --image IMAGE} - deployment is a different resource than pod
+      {kubectl apply} (create/update anything via YAML)
+    Get: {kubectl get OPTION} is your general purpose information display
+      - {kubectl get pods} for example will display your pods Name/Readystate/Status/Restarts/Age
+      - {kubectl get all} will display all K8s processes running (pods/cluster/deployment/replicaset)
+    Cleanup: {kubectl delete OPTION} delete your stuff, clean workspaces mean clean(er) code
+      - {kubectl delete pod NAME} to remove a specific pod
+      - {kubectl delete deploy(ment) NAME} to remove a deployment environment
+    Scale: {kubectl scale deploy(ment) NAME --replicas COUNT}
+      - {kubectl scale deploy/NAME} and {kubectl scale deploy NAME} are the same
+      - deploy = deployment = deployments
+      - "--replicas COUNT" sets desired replica amount to COUNT. declarative
+    Logs: {kubectl logs deployment/NAME}
+      - "--follow" wait for new data to be logged
+      - "--tail 1" show only last line to avoid massive log dump
+      {kubectl logs -l run=TAG} - NAME is auto-tagged on pod creation
+    Describe: {kubectl describe POD/NAME} gives detailed information on a single pod
+      - use {kubectl get pods} to get the name of your pod
