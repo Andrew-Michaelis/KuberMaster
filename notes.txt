@@ -55,6 +55,20 @@ Course Roadmap:
     - Node Port - https://kubernetes.io/docs/concepts/services-networking/service/#nodeport
     - K8s DNS spec - https://github.com/kubernetes/dns/blob/master/docs/specification.md 
     - Core DNS for K8s - https://www.coredns.io/plugins/kubernetes/
+    - Kubectl Usage Conventions - https://kubernetes.io/docs/reference/kubectl/conventions/
+    - Kubectl Usage Best Practices - https://kubernetes.io/docs/reference/kubectl/conventions/#best-practices
+    - Kubernetes Object Management - https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/
+    - K8s Obj Management using Imperative Commands - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-command/
+    - Imperative Management using Config Files - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-config/
+    - Declarative Management using Config Files - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/
+    - Understanding Kubernetes Objects - https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/
+    - Kubernetes API Reference - https://kubernetes.io/docs/reference/#api-reference
+    - API Server dry-run - https://kubernetes.io/blog/2019/01/14/apiserver-dry-run-and-kubectl-diff/
+    - Labels - https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+    - - https://vsupalov.com/kubernetes-labels-annotations-difference/
+    - - https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+    - Assigning Pods to Nodes - https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+    - Taints and Tolerations - https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
     Articles:
     - Methodology for building software-as-a-service apps - https://12factor.net/
     - Swarm vs Compose, BFisher AMA - https://github.com/BretFisher/ama/discussions/146
@@ -285,19 +299,21 @@ Kubernetes
     Service: network endpoint to connect to a pod
     Namespace: Filtered group of objects in cluster
       - just a filter, not a security feature
-  Kubectl CLI:
+  Kubectl CLI: #Imperative Kubernetes
     The Three Primary kubectl CLI commands to create a pod:
-      {kubectl run} (single pod per command since 1.18, for troubleshooting mainly)
+      {kubectl run} #single pod per command since 1.18, for troubleshooting mainly
         - {kubectl run NAME --image IMAGE} - unlike Docker, NAME is required
-      {kubectl create} (create some resources via CLI or YAML)
+      {kubectl create} #create some resources via CLI or YAML
         - {kubectl create deploy(ment) NAME --image IMAGE} - deployment is a different resource than pod
-      {kubectl apply} (create/update anything via YAML)
-    Get: {kubectl get OPTION} is your general purpose information display
+      {kubectl apply} #create/update anything via YAML
+    Get: {kubectl get OPTION} #your general purpose information display
       - {kubectl get pods} for example will display your pods Name/Readystate/Status/Restarts/Age
       - {kubectl get all} will display all K8s processes running (pods/cluster/deployment/replicaset)
-    Cleanup: {kubectl delete OPTION} delete your stuff, clean workspaces mean clean(er) code
-      - {kubectl delete pod NAME} to remove a specific pod
-      - {kubectl delete deploy(ment) NAME} to remove a deployment environment
+    Cleanup: {kubectl delete OPTION} #delete your stuff, clean workspaces mean clean(er) code
+      - {kubectl delete pod/NAME} to remove a specific pod
+      - {kubectl delete deploy(ment)/NAME} to remove a deployment environment
+      - {kubectl delete service/NAME} to remove a service
+      - delete can be stacked {kubectl delete deploy/NAME service/NAME service/NAME ...etc...}
     Scale: {kubectl scale deploy(ment) NAME --replicas COUNT}
       - {kubectl scale deploy/NAME} and {kubectl scale deploy NAME} are the same
       - deploy = deployment = deployments
@@ -305,6 +321,96 @@ Kubernetes
     Logs: {kubectl logs deployment/NAME}
       - "--follow" wait for new data to be logged
       - "--tail 1" show only last line to avoid massive log dump
-      {kubectl logs -l run=TAG} - NAME is auto-tagged on pod creation
-    Describe: {kubectl describe POD/NAME} gives detailed information on a single pod
+      {kubectl logs -l run=TAG} #NAME is auto-tagged on pod creation
+    Describe: {kubectl describe POD/NAME} #gives detailed information on a single pod
       - use {kubectl get pods} to get the name of your pod
+    Expose: {kubectl expose deploy(ment) NAME --port PORT} # reates a service(network connection point) for existing pods
+      - ClusterIP(default): single, internal virtual ip allocated. Only reachable from within cluster.
+      - NodePort: high port allocated on each node. Port is open on every node's IP.
+        {kubectl expose deploy(ment) NAME --port PORT --name NEWNAME --type NodePort}
+      - LoadBalancer: controls a LB endpoint external to the cluster. for traffic coming in from external source.
+        {kubectl expose deploy(ment) NAME --port PORT --name NEWNAME --type LoadBalancer}
+      Cluster-->NodePort-->LoadBalancer. Each stacks on the last. A NodePort type service will still have a Cluster-IP
+      - ExternalName: adds CNAME DNS record to CoreDNS only. services in cluster can resolve different endpoints.
+      - Ingress: for HTTP traffic specificaly
+  Kubernetes Services DNS
+    CoreDNS: default since 1.11
+      - we've been using hostnames {curl <hostname>} but that doesn't work outside the same Namespace {kubectl get namespaces}
+      - default format for service DNS is {curl <hostname>.<namespace>.svc.cluster.local}
+  Run, Create, and Expose Generators: 
+    - These commands use helper templates called "generators"
+    - Every resource in K8s has a specification or "spec"
+    - You can output those templates with --dry-run -o yaml {kubectl create deploy/sample --image nginx --dry-run -o yaml}
+    - Generators are "opinionated defaults"
+  Imperative vs. Declarative: 
+      - "I'd like a cup of apple cider"
+    Imperative: Focus is on •how• a program operates
+      - Boil a quart of water, scoop 1 tablespoon of apple cider powder mix, pour over boiling water, ..etc..
+    Declarative: Focus is on •what• a program should accomplish
+      - "Hey Mom, I'd like a cup of apple cider" (engine works through the steps and is only finished when I have a cup)
+    Kubernetes Imperative: {kubectl run},{kubectl create deploy},{kubectl update}
+      - We start with a state we know (no deployment exists)
+      - We ask kubectl run to create a deployment
+      - ...etc...
+      Imperative is easier when you know the state, is easier to get started with, and is easier for humans at the CLI
+      Imperative, however, is NOT easy to automate
+    Kubernetes Declarative: {kubectl apply -f my-resources.yaml}
+      - We don't know the current state
+      - We only know what we want the end result to be (yaml contents)
+        Same command each time
+        Resources can be all in a file, or many files #apply a whole dir
+      Declarative requires understanding the YAML keys and values, more work for initial results
+      Declarative, however, is by FAR the easiest way to automate
+  Three Management Approaches:
+    Imperative Commands:
+      - run, expose, scale, edit, create deploy. 
+      - best for dev/learning/personal projects. 
+      - easy to learn, hard to manage
+    Imperative Objects: 
+      - create -f file.yml, replace -f file.yml, delete.
+      - good for production of small environments. Single file per command
+      - stores your changes in git-based yaml files.
+      - hard to automate.
+    Declarative Objects: #lotsa reading in resources above
+      - apply -f file.yml OR dir\, diff
+      - best for production, easiest to automate
+      - harder to understand and predict changes
+    MOST IMPORTANT RULE:
+      Pick one, and stick with it. Avoid mixing these three approaches.
+      Bret's Recommendations:
+      - Learn Imperative CLI for easy control of loacl and test setups
+      - Store YAML in git, git commit each change before you apply.
+Moving to Declarative Kubernetes:
+  Basic Terminology:
+    Manifest: A description of an API object
+      - requires [apiVersion:, kind:, metadata:, and spec]
+      apiVersion: What API version you use for the resource
+        - {kubectl api-versions} can get the API versions the cluster supports
+      kind: What resource you are going to get
+        - {kubectl api-resources} can get a list of resources the cluster supports
+        - KIND is used to inform what purpose a resource has.
+      metadata: The name of the resource you are going to create
+        - only a name is required
+      spec: what you are doing, the path and purpose of execution
+        - where all the action is at
+  Kubectl CLI: #Declarative Kubernetes
+    Apply: {kubectl apply -f METHOD}
+      - {kubectl apply -f myfile.yaml} - create/update resources in a file
+      - {kubectl apply -f myyaml/} - create/update a whole directory of yaml
+      - {kubectl apply -f https://bret.run/pod.yml} - create/update from a URL (don't be a moron, it's a one-line pull and run)
+    API: 
+      {kubectl api-resources}
+        - lists all resources we have available to use in Kubernetes
+      {kubectl api-versions}
+        - a shorter list of just the api versions we need to worry about
+    Explain: {kubectl explain RESOURCE [options]}
+      {kubectl explain KIND --recursive} #will display all keys supported in the YAML file
+      {kubectl explain KIND.spec} #gives a more verbose description of more specific subkeys
+      {kubectl explain KIND.spec.type} #drills even further into details including LoadBalancer etc.
+      - spec can have a sub spec of other resources {kubectl explain deployment.spec.template.spec.volumes.nfs.server}
+  Kubernetes Configuration YAML: (YAML or JSON) #YAML is more human-readable
+    - Each file contains one or more manifests
+    - Each manifest describes an API object (deployment, job, secret)
+    - Each manifest needs four parts (root key:values in the file)
+  Building your YAML files:
+    
