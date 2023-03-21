@@ -7,7 +7,8 @@ FROM node:6-alpine
 EXPOSE 3000
 # - Then it should use the alpine package manager to install tini: `apk add --no-cache tini`.
 RUN apk add --no-cache tini
-# - Then it should create directory /usr/src/app for app files with `mkdir -p /usr/src/app`, or with the Dockerfile command `WORKDIR /usr/src/app`.
+# - Then it should create directory /usr/src/app for app files with `mkdir -p /usr/src/app`, 
+# or with the Dockerfile command `WORKDIR /usr/src/app`.
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 # - Node.js uses a "package manager", so it needs to copy in package.json file.

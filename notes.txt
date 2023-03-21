@@ -44,24 +44,23 @@ Course Roadmap:
     - Healthcheck in Compose - https://docs.docker.com/compose/compose-file/#healthcheck
     Kubernetes:
     - Kubernetes Home - https://kubernetes.io/
-    - Certified Kubernetes Distributors - https://kubernetes.io/partners/#conformance
+    - - Certified Kubernetes Distributors - https://kubernetes.io/partners/#conformance
     - Kubernetes Components - https://kubernetes.io/docs/concepts/overview/components/#master-components
-    - K8s Labs in Browser - https://killercoda.com/
     - Kubernetes Cheat Sheet - https://cheatography.com/gauravpandey44/cheat-sheets/kubernetes-k8s/
     - Kubectl Cheat Sheet - https://kubernetes.io/docs/reference/kubectl/cheatsheet/
     - Kubectl for Docker users - https://kubernetes.io/docs/reference/kubectl/docker-cli-to-kubectl/
     - Service - https://kubernetes.io/docs/concepts/services-networking/service/
-    - Using Services (tutorial) - https://kubernetes.io/docs/tutorials/kubernetes-basics/expose/expose-intro/
+    - - Using Services (tutorial) - https://kubernetes.io/docs/tutorials/kubernetes-basics/expose/expose-intro/
     - Node Port - https://kubernetes.io/docs/concepts/services-networking/service/#nodeport
     - K8s DNS spec - https://github.com/kubernetes/dns/blob/master/docs/specification.md 
     - Core DNS for K8s - https://www.coredns.io/plugins/kubernetes/
     - Kubectl Usage Conventions - https://kubernetes.io/docs/reference/kubectl/conventions/
-    - Kubectl Usage Best Practices - https://kubernetes.io/docs/reference/kubectl/conventions/#best-practices
+    - - Kubectl Usage Best Practices - https://kubernetes.io/docs/reference/kubectl/conventions/#best-practices
     - Kubernetes Object Management - https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/
-    - K8s Obj Management using Imperative Commands - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-command/
-    - Imperative Management using Config Files - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-config/
-    - Declarative Management using Config Files - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/
-    - Understanding Kubernetes Objects - https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/
+    - - K8s Obj Management using Imperative Commands - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-command/
+    - - Imperative Management using Config Files - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-config/
+    - - Declarative Management using Config Files - https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/
+    - - Understanding Kubernetes Objects - https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/
     - Kubernetes API Reference - https://kubernetes.io/docs/reference/#api-reference
     - API Server dry-run - https://kubernetes.io/blog/2019/01/14/apiserver-dry-run-and-kubectl-diff/
     - Labels - https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
@@ -69,6 +68,15 @@ Course Roadmap:
     - - https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
     - Assigning Pods to Nodes - https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
     - Taints and Tolerations - https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+    - K8s Volumes - https://kubernetes.io/docs/concepts/storage/volumes/
+    - - Stateful Sets - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+    - - Persistent Volumes - https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+    - Ingress - https://kubernetes.io/docs/concepts/services-networking/ingress/
+    - - Ingress Controllers - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+    - Custom Resources - https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
+    - - Operator Pattern - https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+    - - - Operator Hub - https://operatorhub.io/
+    - - - Awesome Operators List (obsoleted for above) https://github.com/operator-framework/awesome-operators
     Articles:
     - Methodology for building software-as-a-service apps - https://12factor.net/
     - Swarm vs Compose, BFisher AMA - https://github.com/BretFisher/ama/discussions/146
@@ -76,6 +84,7 @@ Course Roadmap:
     Resources:
     - Static Site Generator - https://jekyllrb.com/
     - Tutorials and Practice for Docker - https://training.play-with-docker.com/
+    - K8s Labs in Browser - https://killercoda.com/
     - Curated List of Docker resources and projects - https://github.com/veggiemonk/awesome-docker#registry
     - Cheat Sheet Generator (with community sharing) - https://cheatography.com/
 
@@ -225,10 +234,10 @@ HEALTHCHECK was added in 1.12, supported in Dockerfile, Compose YAML, docker run
   last 5 healthchecks can be seen with {docker container inspect}
   Docker run does nothing with these, but services will replace tasks that fail and service updates will wait for confirmation
   Options include;
-  --interval=DURATION (default: 30s, how often (in seconds) the health will be checked)
-  --timeout=DURATION (default: 30s, how long (in seconds) before an attempt fails through timeout)
-  --start-period=DURATION (default: 0s, how long (in seconds) before an attempt will be started (slow booting apps))
-  --retries=N (default: 3, how many attempts can be made to get a healhty result)
+•|interval=DURATION (default: 30s, how often (in seconds) the health will be checked)
+•|timeout=DURATION (default: 30s, how long (in seconds) before an attempt fails through timeout)
+•|start-period=DURATION (default: 0s, how long (in seconds) before an attempt will be started (slow booting apps))
+•|retries=N (default: 3, how many attempts can be made to get a healhty result)
   {HEALTHCHECK curl -f http://localhost/ || false}
   {HEALTHCHECK --timeout=2s --interval=3s --retries=3 CMD curl -f http://localhost || exit 1} (options require CMD)
   running a static site? Just test default URL
@@ -324,7 +333,7 @@ Kubernetes
       {kubectl logs -l run=TAG} #NAME is auto-tagged on pod creation
     Describe: {kubectl describe POD/NAME} #gives detailed information on a single pod
       - use {kubectl get pods} to get the name of your pod
-    Expose: {kubectl expose deploy(ment) NAME --port PORT} # reates a service(network connection point) for existing pods
+    Expose: {kubectl expose deploy(ment) NAME --port PORT} # creates a service(network connection point) for existing pods
       - ClusterIP(default): single, internal virtual ip allocated. Only reachable from within cluster.
       - NodePort: high port allocated on each node. Port is open on every node's IP.
         {kubectl expose deploy(ment) NAME --port PORT --name NEWNAME --type NodePort}
@@ -347,7 +356,7 @@ Kubernetes
     Imperative: Focus is on •how• a program operates
       - Boil a quart of water, scoop 1 tablespoon of apple cider powder mix, pour over boiling water, ..etc..
     Declarative: Focus is on •what• a program should accomplish
-      - "Hey Mom, I'd like a cup of apple cider" (engine works through the steps and is only finished when I have a cup)
+      - "Hey Mom(engine), I'd like a cup of apple cider" (engine works through the steps and is only finished when I have a cup)
     Kubernetes Imperative: {kubectl run},{kubectl create deploy},{kubectl update}
       - We start with a state we know (no deployment exists)
       - We ask kubectl run to create a deployment
@@ -378,12 +387,13 @@ Kubernetes
     MOST IMPORTANT RULE:
       Pick one, and stick with it. Avoid mixing these three approaches.
       Bret's Recommendations:
-      - Learn Imperative CLI for easy control of loacl and test setups
+      - Learn Imperative CLI for easy control of local and test setups
       - Store YAML in git, git commit each change before you apply.
 Moving to Declarative Kubernetes:
-  Basic Terminology:
+  Basic Terminology cont.:
     Manifest: A description of an API object
-      - requires [apiVersion:, kind:, metadata:, and spec]
+      - requires [apiVersion:, kind:, metadata:, and spec:]
+      - the base required information for a yaml file
       apiVersion: What API version you use for the resource
         - {kubectl api-versions} can get the API versions the cluster supports
       kind: What resource you are going to get
@@ -391,9 +401,21 @@ Moving to Declarative Kubernetes:
         - KIND is used to inform what purpose a resource has.
       metadata: The name of the resource you are going to create
         - only a name is required
+        - labels are applied here, used to create key:value pairs that can be filtered or searched for later
       spec: what you are doing, the path and purpose of execution
         - where all the action is at
-  Kubectl CLI: #Declarative Kubernetes
+    Labels: A key:value pair used to identify and sort information
+      - included in the metadata:, labels are simple key:value pairs designed for human sensibilities
+      - can filter other commands, ie: {kubectl get pods -l app=nginx} or {kubectl apply -f myfile.yaml -l app=nginx}
+      - common examples include [tier: frontend, app: api, env: prod, costomer: acme.co, ...etc...]
+      - not meant to hold complex or non-id info, that job belongs to 'annotations'
+    Label Selectors: the "glue" telling Services and Deployments which pods are theirs
+      - many resources use Label Selectors to "link" resource dependencies
+      - you'll see these match up in the Service and Deployment YAML [Building your YAML files:] 
+        - or app.yaml in /assignments/section-17/k8s-yaml
+      - Labels and Selectors are used to control which pods go to which nodes
+      - Taints and Tolerations are the blacklist version of Label Selectors' whitelist
+  Kubectl CLI cont.: #Declarative Kubernetes
     Apply: {kubectl apply -f METHOD}
       - {kubectl apply -f myfile.yaml} - create/update resources in a file
       - {kubectl apply -f myyaml/} - create/update a whole directory of yaml
@@ -405,12 +427,46 @@ Moving to Declarative Kubernetes:
         - a shorter list of just the api versions we need to worry about
     Explain: {kubectl explain RESOURCE [options]}
       {kubectl explain KIND --recursive} #will display all keys supported in the YAML file
-      {kubectl explain KIND.spec} #gives a more verbose description of more specific subkeys
-      {kubectl explain KIND.spec.type} #drills even further into details including LoadBalancer etc.
+      {kubectl explain KIND.SUB} #gives a more verbose description of more specific subkeys
+      {kubectl explain KIND.SUB.SUB} #drills even further into details including LoadBalancer etc.
+      - {kubectl explain services.spec.type}
       - spec can have a sub spec of other resources {kubectl explain deployment.spec.template.spec.volumes.nfs.server}
+    Dry Run: {kubectl apply -f FILE.yml --dry-run=OPTION} #option can be client or server
+      {kubectl apply -f FILE.yml --dry-run=client} #dry-run a create (client side only)
+      {kubectl apply -f FILE.yml --dry-run=server} #dry-run a create/update on a server
+      {kubectl diff -f app.yml} #see the difference between current yml and what's on the server
   Kubernetes Configuration YAML: (YAML or JSON) #YAML is more human-readable
     - Each file contains one or more manifests
     - Each manifest describes an API object (deployment, job, secret)
     - Each manifest needs four parts (root key:values in the file)
   Building your YAML files:
-    
+    •|apiVersion: v1
+    •|kind: Service
+    •|metadata
+    •|  name: app-nginx-service #minimum required is a name
+    •|spec:
+    •|  type: NodePort
+    •|  ports:
+    •|    - port: 80
+    •|  selector: #for a label, required. Select pods based on match
+    •|    app: app-nginx
+    •|--- #literal "---", used to seperate manifests in a single yml file
+    •|apiVersion: apps/v1
+    •|kind: Deployment
+    •|metadata:
+    •|  name: app-nginx-deployment
+    •|spec:
+    •|  replicas: 3
+    •|  selector:
+    •|    matchLabels:
+    •|      app: app-nginx
+    •|  template:
+    •|    metadata:
+    •|      labels: #connecting to selector, must sync. Select pods based on match
+    •|        app: app-nginx
+    •|    spec:
+    •|      containers:
+    •|        - name: nginx
+    •|          image: nginx:1.17.3
+    •|          ports:
+    •|            - containerPort: 80

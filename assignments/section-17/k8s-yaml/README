@@ -1,0 +1,7 @@
+ensure you have docker and kubernetes running (docker desktop)
+ensure your PWD(present working directory) contains the app.yml file "assignments/section-17/k8s-yaml/"
+use the command "kubectl apply -f app.yml"
+congrats, everything is working. You can explore with further commands such as
+kubectl get all
+kubectl describe <POD/NAME>
+kubectl logs <DEPLOYMENT/NAME>
