@@ -20,6 +20,8 @@ Course Roadmap:
     Github:
     - Course Github Repo - https://github.com/bretfisher/udemy-docker-mastery
     - Github Basics and Docs - https://docs.github.com/en/get-started/quickstart/set-up-git
+    - Github Workflow - https://githubflow.github.io/
+    - - Gitflow on Docs - https://docs.github.com/en/get-started/quickstart/github-flow
     Docker:
     - Docker Official Images Library - https://github.com/docker-library/official-images/tree/master/library
     - Storage Drivers Overview - https://docs.docker.com/storage/storagedriver/
@@ -81,6 +83,7 @@ Course Roadmap:
     - Methodology for building software-as-a-service apps - https://12factor.net/
     - Swarm vs Compose, BFisher AMA - https://github.com/BretFisher/ama/discussions/146
     - History of Kubernetes - https://en.wikipedia.org/wiki/Kubernetes
+    - The Comprehensive Dev-Ops Core - https://itrevolution.com/product/the-devops-handbook-second-edition/
     Resources:
     - Static Site Generator - https://jekyllrb.com/
     - Tutorials and Practice for Docker - https://training.play-with-docker.com/
@@ -470,3 +473,71 @@ Moving to Declarative Kubernetes:
     •|          image: nginx:1.17.3
     •|          ports:
     •|            - containerPort: 80
+Storage In Kubernetes:
+  - Storage and stateful workloads are harder in all systems, containers make it both harder and easier
+  StatefulSets: is a new resource type, making Pods more sticky.
+  Volumes: are tied to the lifecycle of a Pod and all containers in a single Pod can share them.
+  PersistentVolumes: are created at the cluster level and outlive a Pod. Multiple Pods can share them.
+  CSI(Container Storage Interface) plugins: are the new way to connect to storage.
+  Ingress: routes outside connections based on hostname or URL
+    - Nginx is popular, but Traefik, HAProxy, F5, Envoy, Istio, ...etc... also exist
+    - Implementation is specific to the Controller you choose
+  CRD's and The Operator Pattern: 3rd party Resources and Controllers
+    - Extends Kubernetes API and CLI
+    Operator: automate deployment and management of complex apps
+      - Databases, monitoring tools, backups, and custom ingresses
+  Higher Deployment Abstractions:
+    kubectl commands just talk to the Kubernetes API
+    Kubernetes has limited built-in templating, versioning, tracking, and management of you apps
+    - Many people design their own templates and have their own opinion on what clean code should look like
+    - "Helm" is the most popular, "Compose on Kubernetes" comes with Docker Desktop, there are well over 60 other options
+    Most deployment tools are only there to Template your YAML
+    - "Helm" was the first winner in this space but can be complex
+    - Kustomize is the Official Kubernetes version which works out-of-the-box since 1.14
+    - docker app and compose-on-kubernetes are the Docker version
+  Kubernetes Dashboard: default GUI for "upstream" Kubernetes
+    Some distributions have their own GUI (Rancher, Docker Ent, OpenShift)
+    - Clouds don't have it by default
+    Let's you review resources and upload YAML
+    !NOT Secure by Default!
+  Namespaces and Context
+    Namespaces limit scope, aka "virtual clusters"
+    not related to Docker/Linux namespaces
+    not needed in small clusters
+    there are some built-in, to hide system stuff from kubectl "users"
+    {kubectl get namespaces} #will show what namespaces are in use
+    {kubectl get all --all-namespaces} #will get all, from every namespace
+    Context: changes kubectl cluster and namespace. can be sumarized in three parts
+      - Cluster #what cluster you are looking at
+      - Auth/User #who you are looking at the cluster as
+      - Namespace #what namespace within a cluster you are looking at
+      {kubectl config get-contents} #shows context info
+      {kubectl config set*} #changes your context paramaters
+
+Automated CLI Workflows:
+  CI/CD = Continuous Integration and Continuous Deployment(Delivery)
+  The Pull Request: the github workflow
+    A standard repository update system where you request for your current github branch to be pushed to the main branch
+      First, create a branch of a github repo to work on.
+      Second, open a pull request, getting feedback from other collaborators.
+      Third, get approval and merge PR into the main branch.
+    What do we need to automate?
+      First, open PR
+      Second, merge PR
+    Why bother with this automation?
+      It's the glue that holds Dev-Ops together.
+    !ALWAYS LINT!
+    Using GitHub Actions:
+      - what is GHA? - https://www.youtube.com/watch?v=cP0I9w2coGU
+      - learning GHA - https://docs.github.com/en/actions
+  Assuming PR Workflow, What needs automation in Docker?
+    Basic Docker Build:
+    BuildKit Cache:
+    Multi-Platform Builds:
+    Metadata and Dynamic Builds:
+    GitHub Comments:
+    CVE Scanning of Images:
+    CVE Scan Blocking:
+    Unit & Integration Testing:
+    Kubernetes Smoke Test:
+    (bonus) Job Parallelization for GHA:
